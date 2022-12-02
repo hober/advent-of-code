@@ -1,0 +1,1 @@
+I can't remember if I've ever done [Advent of Code](https://adventofcode.com/) before. If I did, I don't have the code anymore. In 2022, [@erynofwales](https://github.com/erynofwales) suggested we each give it a go, so here I am.
