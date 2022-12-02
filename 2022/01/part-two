@@ -8,16 +8,20 @@ while read -r line; do
     if [[ $line ]]; then
         (( current += line ))
     else
-        if (( current > first )); then
-            third=$second
-            second=$first
-            first=$current
-        elif (( current > second )); then
-            third=$second
-            second=$current
-        elif (( current > third )); then
+        if (( current > third )); then
             third=$current
         fi
+
+        if (( current > second )); then
+            third=$second
+            second=$current
+        fi
+
+        if (( current > first )); then
+            second=$first
+            first=$current
+        fi
+
         current=0
     fi
 done
