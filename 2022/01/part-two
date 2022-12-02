@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+
+typeset -i current=0 first=0 second=0 third=0
+
+IFS="\n"
+
+while read -r line; do
+    if [[ $line ]]; then
+        (( current += line ))
+    else
+        if (( current > first )); then
+            third=$second
+            second=$first
+            first=$current
+        elif (( current > second )); then
+            third=$second
+            second=$current
+        elif (( current > third )); then
+            third=$current
+        fi
+        current=0
+    fi
+done
+
+print $(( first + second + third ))
