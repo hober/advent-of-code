@@ -1,0 +1,60 @@
+#!/usr/bin/env zsh
+
+typeset -i score=0 shape=0 outcome=0
+
+IFS="\n"
+
+while read -r line; do
+    if [[ $line ]]; then
+        case ${line[3]} in
+            X) # lose
+                outcome=0
+                case ${line[1]} in
+                    A) # rock
+                        shape=3
+                        ;;
+                    B) # paper
+                        shape=1
+                        ;;
+                    C) # scissors
+                        shape=2
+                        ;;
+                esac
+                ;;
+            Y) # draw
+                outcome=3
+                case ${line[1]} in
+                    A) # rock
+                        shape=1
+                        ;;
+                    B) # paper
+                        shape=2
+                        ;;
+                    C) # scissors
+                        shape=3
+                        ;;
+                esac
+                ;;
+            Z) # win
+                outcome=6
+                case ${line[1]} in
+                    A) # rock
+                        shape=2
+                        ;;
+                    B) # paper
+                        shape=3
+                        ;;
+                    C) # scissors
+                        shape=1
+                        ;;
+                esac
+                ;;
+        esac
+        (( score+=shape ))
+        (( score+=outcome ))
+        shape=0
+        outcome=0
+    fi
+done
+
+print $score
