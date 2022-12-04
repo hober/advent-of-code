@@ -1,0 +1,43 @@
+#!/usr/bin/env zsh
+
+IFS="\n"
+
+score() {
+    emulate -L zsh
+    codepoint=$( printf "%d" \'$1 )
+    case $1 in
+        [a-z])
+            print $(( $codepoint - 96 ))
+            ;;
+        [A-Z])
+            print $(( $codepoint - 38 ))
+            ;;
+    esac
+}
+
+typeset -a is_in_left is_in_right
+
+typeset -i sum=0
+
+while read -r line; do
+    is_in_left=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+    is_in_right=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+
+    (( midpoint = $#line / 2 ))
+
+    for i in {1..$midpoint}; do
+        is_in_left[$(score $line[$i])]=1
+    done
+
+    for i in {$((midpoint + 1))..$#line}; do
+        is_in_right[$(score $line[$i])]=1
+    done
+
+    for i in {1..52}; do
+        if (( is_in_left[$i] > 0 &&  is_in_right[$i] > 0 )); then
+            (( sum += $i ))
+        fi
+    done
+done
+
+print $sum
