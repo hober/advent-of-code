@@ -1,0 +1,52 @@
+#!/usr/bin/env zsh
+
+IFS="\n"
+
+score() {
+    emulate -L zsh
+    codepoint=$( printf "%d" \'$1 )
+    case $1 in
+        [a-z])
+            print $(( $codepoint - 96 ))
+            ;;
+        [A-Z])
+            print $(( $codepoint - 38 ))
+            ;;
+    esac
+}
+
+typeset -a is_in_first is_in_second is_in_third
+
+typeset -i lineno=0 sum=0
+
+while read -r line; do
+    if (( lineno % 3 == 0 )); then
+        is_in_first=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+
+        for i in {1..$#line}; do
+            is_in_first[$(score $line[$i])]=1
+        done
+    elif (( lineno % 3 == 1 )); then
+        is_in_second=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+
+        for i in {1..$#line}; do
+            is_in_second[$(score $line[$i])]=1
+        done
+    elif (( lineno % 3 == 2 )); then
+        is_in_third=(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+
+        for i in {1..$#line}; do
+            is_in_third[$(score $line[$i])]=1
+        done
+
+        for i in {1..52}; do
+            if (( is_in_first[$i] > 0 &&  is_in_second[$i] > 0  &&  is_in_third[$i] > 0 )); then
+                (( sum += $i ))
+            fi
+        done
+    fi
+
+    (( lineno++ ))
+done
+
+print $sum
