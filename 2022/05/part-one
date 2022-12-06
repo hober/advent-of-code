@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+
+typeset -a stacks one two three four five six seven eight nine
+stacks=(one two three four five six seven eight nine)
+one=(G F V H P S)
+two=(G J F B V D Z M)
+three=(G M L J N)
+four=(N G Z V D W P)
+five=(V R C B)
+six=(V R S M P W L Z)
+seven=(T H P)
+eight=(Q R S N C H Z V)
+nine=(F L G P V Q J)
+
+IFS=" "
+
+while read -rA command; do
+    n_crates=$command[2]
+    from_stack=${stacks[$command[4]]}
+    to_stack=${stacks[$command[6]]}
+
+    for i in {1..${n_crates}}; do
+        len=${#${(A)${(P)from_stack}}}
+        crate_to_move=${(A)${(P)from_stack}[$len]}
+        eval "${to_stack}+=$crate_to_move"
+        shift -p ${from_stack}
+    done
+done
+
+for i in {1..${#stacks}}; do
+    stack=${stacks[$i]}
+    len=${#${(A)${(P)stack}}}
+    print -n "${(A)${(P)stack}[$len]}"
+done
+
+print
