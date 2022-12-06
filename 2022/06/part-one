@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+read -r datastream
+
+typeset -i len end i j
+
+len=${#datastream}
+(( end = len - 3 ))
+
+for i in {1..$end}; do
+    (( j = i + 3 ))
+    marker=${datastream[$i,$j]}
+
+    typeset -a seen
+    seen=()
+
+    for n in {1..4}; do
+        char=$marker[$n]
+        if (( $seen[(Ie)$char] )); then
+            break
+        fi
+        seen+=$char
+    done
+
+    if (( ${#seen} == 4 )); then
+        print $j
+        break
+    fi
+done
