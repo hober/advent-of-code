@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+typeset -i sum=0
+
+IFS=",-"
+
+while read -rA nums; do
+    if (( nums[1] <= nums[3] && nums[2] >= nums[3] )); then
+        (( sum++ ))
+    elif (( nums[1] <= nums[4] && nums[3] <= nums[1] )); then
+        (( sum++ ))
+    fi
+done
+
+print $sum
