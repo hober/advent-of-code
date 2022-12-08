@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+import sys
+
+from folder import Folder, parse
+
+parse(sys.argv[1:])
+
+total = 0
+
+for folder in Folder.root.walk():
+    if folder.size() <= 100000:
+        total += folder.size()
+
+print("%d" % total)
