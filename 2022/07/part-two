@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import sys
+
+from folder import Folder, parse
+
+parse(sys.argv[1:])
+
+TOTAL_SPACE_ON_DEVICE = 70000000
+SPACE_NEEDED = 30000000
+USED_SPACE = Folder.root.size()
+UNUSED_SPACE = TOTAL_SPACE_ON_DEVICE - USED_SPACE
+TARGET=SPACE_NEEDED - UNUSED_SPACE
+
+candidate = Folder.root
+
+for folder in Folder.root.walk():
+    if folder.size() >= TARGET:
+        if folder.size() <= candidate.size():
+            candidate = folder
+
+print("%d" % candidate.size())
