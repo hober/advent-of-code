@@ -12,8 +12,8 @@ class Folder:
     def __init__(self, parent=None):
         self.parent = parent
         self.subfolders = {}
-        self.documents = {}
-        self.cachedSize = 0
+        self.fileSize = 0
+        self.subfolderSize = 0
 
     def mkdir(self, name):
         self.subfolders[name] = Folder(self)
@@ -23,17 +23,14 @@ class Folder:
             self.mkdir(name)
         return self.subfolders[name]
 
-    def touch(self, name, size):
-        self.documents[name] = size
+    def addFileSize(self, size):
+        self.fileSize += size
 
     def size(self):
-        if self.cachedSize > 0:
-            return self.cachedSize
-        for ignore, folder in self.subfolders.items():
-            self.cachedSize += folder.size()
-        for ignore, size in self.documents.items():
-            self.cachedSize += size
-        return self.cachedSize
+        if self.subfolderSize == 0:
+            for ignore, folder in self.subfolders.items():
+                self.subfolderSize += folder.size()
+        return self.subfolderSize + self.fileSize
 
     def walk(self):
         for ignore, subfolder in self.subfolders.items():
@@ -58,7 +55,4 @@ def parse(args):
         elif line[0] == 'd':
             cwd.mkdir(line[4:-1])
         else:
-            space = line.find(' ')
-            size = int(line[0:space])
-            name = line[space+1:-1]
-            cwd.touch(name, size)
+            cwd.addFileSize(int(line[0:line.find(' ')]))
