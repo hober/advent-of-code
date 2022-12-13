@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import sys
+
+from forest import parse
+
+def isTreeVisible(forest, tree_i, tree_j):
+    min_row = 0
+    max_row = forest.n_rows - 1
+    min_col = 0
+    max_col = forest.n_cols - 1
+
+
+    if tree_i == min_row or tree_i == max_row:
+        return True
+    elif tree_j == min_col or tree_j == max_row:
+        return True
+
+    visible = True
+    for i in range(tree_i):
+        if forest.trees[i][tree_j] >= forest.trees[tree_i][tree_j]:
+            visible = False
+    if visible is True:
+        return True
+
+    visible = True
+    for i in range(tree_i+1, forest.n_rows):
+        if forest.trees[i][tree_j] >= forest.trees[tree_i][tree_j]:
+            visible = False
+    if visible is True:
+        return True
+
+    visible = True
+    for j in range(tree_j):
+        if forest.trees[tree_i][j] >= forest.trees[tree_i][tree_j]:
+            visible = False
+    if visible is True:
+        return True
+
+    visible = True
+    for j in range(tree_j+1, forest.n_cols):
+        if forest.trees[tree_i][j] >= forest.trees[tree_i][tree_j]:
+            visible = False
+
+    return visible
+
+def howManyTreesAreVisible(forest):
+    count = 0
+    for i in range(forest.n_rows):
+        for j in range(forest.n_cols):
+            if isTreeVisible(forest,i,j):
+                count += 1
+    return count
+
+print("%d" % howManyTreesAreVisible(parse(sys.argv[1:])))
