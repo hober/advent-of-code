@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import sys
+
+from forest import parse
+
+def scenicScore(forest, tree_i, tree_j):
+    min_row = 0
+    max_row = forest.n_rows - 1
+    min_col = 0
+    max_col = forest.n_cols - 1
+
+    score_up = 0
+    for i in range(tree_i-1, -1, -1):
+        score_up += 1
+        if forest.trees[i][tree_j] >= forest.trees[tree_i][tree_j]:
+            break
+
+    score_left = 0
+    for j in range(tree_j-1, -1, -1):
+        score_left += 1
+        if forest.trees[tree_i][j] >= forest.trees[tree_i][tree_j]:
+            break
+
+    score_down = 0
+    for i in range(tree_i+1, forest.n_rows):
+        score_down += 1
+        if forest.trees[i][tree_j] >= forest.trees[tree_i][tree_j]:
+            break
+
+    score_right = 0
+    for j in range(tree_j+1, forest.n_cols):
+        score_right += 1
+        if forest.trees[tree_i][j] >= forest.trees[tree_i][tree_j]:
+            break
+
+    score = score_up * score_left * score_down * score_right
+
+    return score
+
+def highestScenicScore(forest):
+    highest = 0
+    for i in range(forest.n_rows):
+        for j in range(forest.n_cols):
+            score = scenicScore(forest,i,j)
+            if score > highest:
+                highest = score
+    return highest
+
+print("%d" % highestScenicScore(parse(sys.argv[1:])))
