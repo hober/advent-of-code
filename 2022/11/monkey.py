@@ -15,10 +15,6 @@ class Operation:
         elif op == '*':
             self.op = lambda x, y: x * y
 
-    def __str__(self):
-        return self.expr
-        # return "%s%s%s" % (self.lhs, self.op, self.rhs)
-
     def __call__(self, old):
         lhs = self.lhs
         rhs = self.rhs
@@ -38,9 +34,6 @@ class Monkey:
         self.if_false = None
         self.count = 0
 
-    def __str__(self):
-        return "Monkey %s <%s, op='%s' test=%d true=%d false=%d>" % (self.label, self.things, self.operation, self.test, self.if_true, self.if_false)
-
     def take(self, thing):
         self.things.append(thing)
 
@@ -54,25 +47,25 @@ class KeepAway:
     def play(self, args):
         # Prepare to play
 
-        this_monkey = None
+        monkey = None
         for line in fileinput.input(args):
             if line[:-1] == '':
                 pass
             elif line[0] == 'M': # Monkey
                 k = int(line[7:-2])
-                this_monkey = Monkey(k)
-                self.troop[k] = this_monkey
+                monkey = Monkey(k)
+                self.troop[k] = monkey
             elif line[2] == 'S': # Starting things
-                this_monkey.things = [int(n) for n in line[18:-1].split(", ")]
+                monkey.things = [int(n) for n in line[18:-1].split(", ")]
             elif line[2] == 'O': # Operation
-                this_monkey.operation = Operation(line[13:-1])
+                monkey.operation = Operation(line[13:-1])
             elif line[2] == 'T': # Test
-                this_monkey.test = int(line[21:-1])
-                self.bound = self.bound * this_monkey.test
+                monkey.test = int(line[21:-1])
+                self.bound = self.bound * monkey.test
             elif line[7] == 't': # If true
-                this_monkey.if_true = int(line[29:-1])
+                monkey.if_true = int(line[29:-1])
             elif line[7] == 'f': # If false
-                this_monkey.if_false = int(line[30:-1])
+                monkey.if_false = int(line[30:-1])
 
         # Play the game
 
@@ -82,11 +75,11 @@ class KeepAway:
                 monkey.things = []
                 for thing in things:
                     monkey.count += 1
-                    worry = math.floor(monkey.operation(thing) / self.divisor)
+                    worry = math.floor(monkey.operation(thing) / self.divisor) % self.bound
                     if worry % monkey.test == 0:
-                        self.troop[monkey.if_true].take(worry % self.bound)
+                        self.troop[monkey.if_true].take(worry)
                     else:
-                        self.troop[monkey.if_false].take(worry % self.bound)
+                        self.troop[monkey.if_false].take(worry)
 
         # Scoring
 

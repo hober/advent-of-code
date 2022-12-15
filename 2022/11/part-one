@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
+import monkey, sys
 
-from monkey import KeepAway
-
-game = KeepAway(20, 3.0)
-
-game.play(sys.argv[1:])
+monkey.KeepAway(20, 3.0).play(sys.argv[1:])
