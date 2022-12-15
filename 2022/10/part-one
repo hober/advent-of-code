@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
+import cpu, sys
 
-from cpu import CPU
+total = 0
 
-cpu = CPU()
-
-sum = 0
 for cycle, x in cpu.run(sys.argv[1:]):
     if cycle % 40 == 20:
-        sum += cycle * x
+        total += cycle * x
 
-print(sum)
+print(total)

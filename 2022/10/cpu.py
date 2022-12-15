@@ -2,20 +2,13 @@
 
 import fileinput
 
-class CPU:
-    def __init__(self):
-        self.x = 1
-
-    def run(self, args):
-        cycle = 0
-        for line in fileinput.input(args):
+def run(args):
+    x = 1
+    cycle = 0
+    for line in fileinput.input(args):
+        cycle += 1
+        yield (cycle, x)
+        if line[0:4] == 'addx':
             cycle += 1
-            yield (cycle, self.x)
-            if line[0:4] == 'addx':
-                cycle += 1
-                yield (cycle, self.x)
-                self.x += int(line[5:-1])
-
-if __name__ == '__main__':
-    pass
-
+            yield (cycle, x)
+            x += int(line[5:-1])
