@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import ast, fileinput, functools, itertools, sys
+
+Maybe = object()
+
+def compare(left, right):
+    if type(left) == int and type(right) == int:
+        return left - right
+    else:
+        if type(left) == int:
+            left = [left]
+        if type(right) == int:
+            right = [right]
+        for l,r in itertools.zip_longest(left, right, fillvalue=None):
+            if l is None:
+                return -1
+            if r is None:
+                return 1
+            c = compare(l, r)
+            if c is not None:
+                return c
+        return None
+
+class Pair:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def correct(self):
+        return compare(self.left, self.right)
+
+def parse(args):
+    packets = []
+
+    for line in fileinput.input(sys.argv[1:]):
+        line = line[:-1]
+        if line == '':
+            continue
+        packets.append(ast.literal_eval(line))
+
+    return packets
+
+packets = parse(sys.argv[1:])
+packets.append([[2]])
+packets.append([[6]])
+
+i = 0
+two = None
+six = None
+for packet in sorted(packets, key=functools.cmp_to_key(compare)):
+    i = i+1
+    if two is not None and six is not None:
+        break
+    if two is None and compare(packet, [[2]]) == 0:
+        two = i
+    if six is None and compare(packet, [[6]]) == 0:
+        six = i
+
+print(two * six)
