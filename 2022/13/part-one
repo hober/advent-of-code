@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import ast, fileinput, itertools, sys
+
+Maybe = object()
+
+def compare(left, right):
+    if type(left) == int and type(right) == int:
+        if left < right:
+            return True
+        if left > right:
+            return False
+    else:
+        if type(left) == int:
+            left = [left]
+        if type(right) == int:
+            right = [right]
+        for l,r in itertools.zip_longest(left, right, fillvalue=None):
+            if l is None:
+                return True
+            if r is None:
+                return False
+            c = compare(l, r)
+            if c in [True, False]:
+                return c
+
+class Pair:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def correct(self):
+        return compare(self.left, self.right)
+
+def parse(args):
+    pairs = []
+
+    left = None
+    right = None
+
+    for line in fileinput.input(sys.argv[1:]):
+        line = line[:-1]
+        if line == '':
+            continue
+        if left is None:
+            left = ast.literal_eval(line)
+        else:
+            right = ast.literal_eval(line)
+            pairs.append(Pair(left, right))
+            left = None
+
+    return pairs
+
+sum = 0
+pairs = parse(sys.argv[1:])
+for i in range(len(pairs)):
+    if pairs[i].correct() == True:
+        sum += i + 1
+
+print(sum)
